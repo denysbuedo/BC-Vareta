@@ -70,7 +70,7 @@ node {
         sshagent(['id_rsa_fsf']) { 
             
             //--- Tar and copy files result to FTP Server ---
-            def result_tar = "$current_task.tar.gz"
+            def result_tar = "$owner_job-$job.tar.gz"
             echo "Tar: $result_tar"             
             sh "ssh root@192.168.17.132 tar fcz /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/$result_tar --absolute-names /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/results/"
             sh "ssh root@192.168.17.132 mv /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/$result_tar /media/DATA/FTP/Matlab/BC-Vareta"
