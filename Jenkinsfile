@@ -19,7 +19,7 @@ node {
 	def scalp="${parser.attribute("Scalp")}"
 	 
 	//--- Setting Build description ---
-	def current_task = "BC-Vareta#: $job-$owner_job" 
+	def current_task = "BC-Vareta# $job-$owner_job" 
 	currentBuild.displayName = "$current_task"
     
     //--- Load data stage ---
@@ -69,9 +69,11 @@ node {
         //--- Opening ssh connection with the Freesurfer server ---
         sshagent(['id_rsa_fsf']) { 
             
-            //--- Tar and copy files result to FTP Server ---            
-            sh "ssh root@192.168.17.132 tar fcz /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/$current_task.tar.gz --absolute-names /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/results/"
-            sh "ssh root@192.168.17.132 mv /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/$current_task.tar.gz /media/DATA/FTP/Matlab/BC-Vareta"
+            //--- Tar and copy files result to FTP Server ---
+            def result_tar = "$current_task.tar.gz"
+            echo "Tar: $result_tar"             
+            sh "ssh root@192.168.17.132 tar fcz /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/$result_tar --absolute-names /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/results/"
+            sh "ssh root@192.168.17.132 mv /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/$result_tar /media/DATA/FTP/Matlab/BC-Vareta"
             
             //--- cleaning workspace and results folder ---
             sh "ssh root@192.168.17.132 rm -rf /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/External_data/"
