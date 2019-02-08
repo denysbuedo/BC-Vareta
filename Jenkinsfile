@@ -70,6 +70,7 @@ node {
         sshagent(['id_rsa_fsf']) { 
             
             //--- Tar and copy files result to FTP Server ---
+            echo "$job-$owner_job_BC-Vareta.tar.gz"
             sh "ssh root@192.168.17.132 tar fcz /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/dbuedo.tar.gz --absolute-names /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/results/"
             sh "ssh root@192.168.17.132 mv /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/dbuedo.tar.gz /media/DATA/FTP/Matlab/BC-Vareta"
             
