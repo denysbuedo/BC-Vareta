@@ -8,18 +8,16 @@
 node {
     
     //--- load new task data ---
-	echo "Reading the task data"
+	echo "Reading task's data"
     def task = readFile "$JENKINS_HOME/workspace/BC-Vareta/task-config.xml"
 	def parser = new XmlParser().parseText(task)
-	def job = "${parser.attribute("Job")}"
-	def owner_task = "${parser.attribute("Owner")}"
 	def eeg = "${parser.attribute("EEG")}"
 	def leadfield ="${parser.attribute("LeadField")}"
     def surface ="${parser.attribute("Surface")}"
 	def scalp="${parser.attribute("Scalp")}"
 	 
 	//--- Setting Build description ---
-	currentBuild.displayName = "$job:$owner_task" 
+	currentBuild.displayName = "BC-Vareta:Jenkins" 
     
     //--- Load data stage ---
     stage('Data Acquisition'){
@@ -28,14 +26,14 @@ node {
        sshagent(['id_rsa_fsf']) {    
            
 			//--- Creating data files ---
-			def data_descipt_file =  new File ("$JENKINS_HOME/workspace/BC-Vareta/data-description.txt")
+			def data_file =  new File ("$JENKINS_HOME/workspace/BC-Vareta/data.txt")
 			def eeg_file = new File ("$JENKINS_HOME/workspace/BC-Vareta/$eeg")
 			def leadfield_file = new File ("$JENKINS_HOME/workspace/BC-Vareta/$leadfield")
 			def surface_file = new File ("$JENKINS_HOME/workspace/BC-Vareta/$surface")
 			def scalp_file = new File ("$JENKINS_HOME/workspace/BC-Vareta/$scalp")
 			
 			//--- Copying data files to Matlab Server ---
-			sh "scp $data_descipt_file root@192.168.17.132:/root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/External_data/"
+			sh "scp $data_file root@192.168.17.132:/root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/External_data/"
 			sh "scp $eeg_file root@192.168.17.132:/root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/External_data/"
 			sh "scp $leadfield_file root@192.168.17.132:/root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/External_data/"
 			sh "scp $surface_file root@192.168.17.132:/root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/External_data/"
@@ -47,7 +45,7 @@ node {
 			sh "rm -f $JENKINS_HOME/workspace/BC-Vareta/$surface"
 			sh "rm -f $JENKINS_HOME/workspace/BC-Vareta/$scalp"
 			sh "rm -f $JENKINS_HOME/workspace/BC-Vareta/task-config.xml"
-			sh "rm -f $JENKINS_HOME/workspace/BC-Vareta/data-description.txt"
+			sh "rm -f $JENKINS_HOME/workspace/BC-Vareta/data.txt"
         }
     }
     
@@ -60,7 +58,6 @@ node {
             //--- Run matlab function            
             echo "--- Run matlab scrip ---"
             sh "ssh root@192.168.17.132 bash /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/jenkins.sh"
-            //sh "ssh root@192.168.17.132 chmod +x /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/jenkins.sh"
         }
     }
     
@@ -84,6 +81,6 @@ node {
     
     stage('Notification'){
 
-        //TODO Notification stage
+       echo "Done!!!"
     }
 }
