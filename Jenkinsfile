@@ -19,7 +19,7 @@ node {
 	def scalp="${parser.attribute("Scalp")}"
 	 
 	//--- Setting Build description ---
-	def current_task = "$BC-Vareta#: job-$owner_job" 
+	def current_task = "BC-Vareta#: $job-$owner_job" 
 	currentBuild.displayName = "$current_task"
     
     //--- Load data stage ---
