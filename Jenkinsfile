@@ -11,13 +11,16 @@ node {
 	echo "Reading task's data"
     def task = readFile "$JENKINS_HOME/workspace/BC-Vareta/task-config.xml"
 	def parser = new XmlParser().parseText(task)
+	def job = "${parser.attribute("Job")}"
+	def owner_job = "${parser.attribute("Owner")}"
 	def eeg = "${parser.attribute("EEG")}"
 	def leadfield ="${parser.attribute("LeadField")}"
     def surface ="${parser.attribute("Surface")}"
 	def scalp="${parser.attribute("Scalp")}"
 	 
 	//--- Setting Build description ---
-	currentBuild.displayName = "BC-Vareta:Jenkins" 
+	def current_task = "$BC-Vareta#: job-$owner_job" 
+	currentBuild.displayName = "$current_task"
     
     //--- Load data stage ---
     stage('Data Acquisition'){
@@ -67,8 +70,8 @@ node {
         sshagent(['id_rsa_fsf']) { 
             
             //--- Tar and copy files result to FTP Server ---            
-            sh "ssh root@192.168.17.132 tar fcz /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/results-dbuedo.tar.gz --absolute-names /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/results/"
-            sh "ssh root@192.168.17.132 mv /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/results-dbuedo.tar.gz /media/DATA/FTP/Matlab/BC-Vareta"
+            sh "ssh root@192.168.17.132 tar fcz /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/$current_task.tar.gz --absolute-names /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/results/"
+            sh "ssh root@192.168.17.132 mv /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/$current_task.tar.gz /media/DATA/FTP/Matlab/BC-Vareta"
             
             //--- cleaning workspace and results folder ---
             sh "ssh root@192.168.17.132 rm -rf /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/External_data/"
