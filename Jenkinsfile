@@ -60,7 +60,7 @@ node {
             
             //--- Run matlab function            
             echo "--- Run matlab scrip ---"
-            sh "ssh root@192.168.17.132 bash /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/jenkins.sh"
+            sh "ssh root@192.168.17.132 bash /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/jenkins.sh run"
         }
     }
     
@@ -70,6 +70,9 @@ node {
         sshagent(['id_rsa_fsf']) { 
             
             //--- Tar and copy files result to FTP Server ---
+            sh "ssh root@192.168.17.132 bash /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/jenkins.sh delivery $owner_job"
+            
+            /*
             sh "ssh root@192.168.17.132 tar fcz /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/dbuedo.tar.gz --absolute-names /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/results/"
             sh "ssh root@192.168.17.132 mv /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/dbuedo.tar.gz /media/DATA/FTP/Matlab/BC-Vareta"
             
@@ -78,6 +81,7 @@ node {
             sh "ssh root@192.168.17.132 mkdir /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/External_data"
             sh "ssh root@192.168.17.132 rm -rf /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/results"
             sh "ssh root@192.168.17.132 mkdir /root/matlab/BC-VARETA-toolbox-master/BC-VARETA-toolbox-master/results"
+            */
         }
         
     }
